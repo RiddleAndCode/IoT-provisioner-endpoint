@@ -60,8 +60,9 @@ class SealWrapper(SEAL):
         pub.insert(0,4)
         return base64.b64encode(pub).decode('utf-8')
     def getDeviceIdentity(self):
-        print(self.getBase64StaticPublicKey())
-        print(self.getDevEUI())
+        print("\n\t\t\033[4mBase64 encoded device public key and DevEUI\033[0m\n")
+        print("\t\tPublic Key : " +  str(self.getBase64StaticPublicKey()))
+        print("\t\tDevEUI : " + str(self.getDevEUI()))
 
 
 
@@ -103,13 +104,13 @@ class Verifier:
             serverSignature = base64.b64decode(response["data"]["signature"])
             verifier = DSS.new(self.staticLedgerKey, 'fips-186-3')
             verifier.verify(SHA256.new(serverEphemeralKey),(serverSignature))
-            print('Signature from ledger is valid')
+            print('\n\t\tSignature from ledger is valid.')
             return True
         except KeyError:
-            print('Invalid JSON Fields')
+            print('\t\tInvalid JSON Fields')
             return False
         except ValueError:
-            print('Signature is not valid')
+            print('\t\tSignature is not valid')
             return False
 
 class NISTP_Pair:
@@ -181,8 +182,8 @@ if serverEphemeralVerifier.verify(response) is True:
     secret_hkdf = secret.calculateSharedSecret(serverEphemeralKey)
 
 
-    print("Calculated secret of ECDH :" + " " + str((secret_hkdf).hex()))
-    print("Storing the secret inside Secure Element ... ")
+    print("\t\tCalculated secret of ECDH :" + " " + str((secret_hkdf).hex()))
+    print("\t\tStoring the secret inside Secure Element ... ")
     seal.store(secret_hkdf[:16])
 
 seal.getDeviceIdentity()
