@@ -55,6 +55,13 @@ class SealWrapper(SEAL):
         super().store_data(10,(ctypes.c_ubyte*16).from_buffer_copy(message),16)
     def read(self):
         return super().read_data(10,16)
+    def getBase64StaticPublicKey(self):
+        pub = bytearray(self.getStaticPublicKey())
+        pub.insert(0,4)
+        return base64.b64encode(pub).decode('utf-8')
+    def getDeviceIdentity(self):
+        print(self.getBase64StaticPublicKey())
+        print(self.getDevEUI())
 
 
 
@@ -75,7 +82,6 @@ class SharedSecret:
         ephemeralLedgerKeyY = int.from_bytes(ephemeralLedgerPublicKey[33:], byteorder='big')
         ephemeralLedgerKey = ECC.construct(point_x=ephemeralLedgerKeyX, point_y=ephemeralLedgerKeyY, curve='secp256r1')
         secret = ephemeralLedgerKey.public_key().pointQ * self.ephemeral_sec_key
-
         # HKDF the coordinates of the shared secret point
         secret_hkdf = HKDF(secret.x.to_bytes() + secret.y.to_bytes(), 16, b'', SHA256)
         return secret_hkdf
@@ -158,14 +164,15 @@ class MockNetwork():
         return mockResponse
 
 
+
 seal = SealWrapper()
 secret = SharedSecret()
 serverEphemeralVerifier = Verifier()
 bmwEndpoint = Network()
 mockBmwEndpoint = MockNetwork()
 
-response = bmwEndpoint.post(seal.getDevEUI(),secret.getBase64PublicKey(),seal.getBase64Signature(secret.getBase64PublicKey()))
-Utils.println(response)
+# response = bmwEndpoint.post(seal.getDevEUI(),secret.getBase64PublicKey(),seal.getBase64Signature(secret.getBase64PublicKey()))
+# Utils.println(response)
 response = mockBmwEndpoint.post(seal.getDevEUI(),secret.getBase64PublicKey(),seal.getBase64Signature(secret.getBase64PublicKey()))
 
 if serverEphemeralVerifier.verify(response) is True:
@@ -177,6 +184,8 @@ if serverEphemeralVerifier.verify(response) is True:
     print("Calculated secret of ECDH :" + " " + str((secret_hkdf).hex()))
     print("Storing the secret inside Secure Element ... ")
     seal.store(secret_hkdf[:16])
+
+seal.getDeviceIdentity()
 
 
 
