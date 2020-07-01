@@ -176,11 +176,11 @@ seal = SealWrapper()
 secret = SharedSecret()
 serverEphemeralVerifier = Verifier()
 bmwEndpoint = Network()
-mockBmwEndpoint = MockNetwork()
+#mockBmwEndpoint = MockNetwork()
+#response = mockBmwEndpoint.post(seal.getDevEUI(),secret.getBase64PublicKey(),seal.getBase64Signature(secret.getBase64PublicKey()))
 
 response = bmwEndpoint.post(seal.getDevEUI(),secret.getBase64PublicKey(),seal.getBase64Signature(secret.getBase64PublicKey()))
 Utils.println(response)
-# response = mockBmwEndpoint.post(seal.getDevEUI(),secret.getBase64PublicKey(),seal.getBase64Signature(secret.getBase64PublicKey()))
 
 if serverEphemeralVerifier.verify(response) is True:
 
