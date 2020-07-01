@@ -63,6 +63,7 @@ class SealWrapper(SEAL):
         print("\n\t\t\033[4mBase64 encoded device public key and DevEUI\033[0m\n")
         print("\t\tPublic Key : " +  str(self.getBase64StaticPublicKey()))
         print("\t\tDevEUI : " + str(self.getDevEUI()))
+        print("\t\tSharedSecret : " + str(base64.b64encode(self.read()).decode('utf-8')))
 
 
 
