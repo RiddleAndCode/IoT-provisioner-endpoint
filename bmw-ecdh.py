@@ -68,6 +68,7 @@ class SealWrapper(SEAL):
 
 
 
+
 class SharedSecret:
     def __init__(self):
         ephemeral_key = ECC.generate(curve='P-256')
@@ -112,6 +113,10 @@ class Verifier:
         except ValueError:
             print('\t\tSignature is not valid')
             return False
+        except TypeError:
+            if "already exist" in response["data"]:
+                print('\t\tShared Secret is Already Generated for this Public Key')
+                return False
 
 class NISTP_Pair:
 
@@ -172,9 +177,9 @@ serverEphemeralVerifier = Verifier()
 bmwEndpoint = Network()
 mockBmwEndpoint = MockNetwork()
 
-# response = bmwEndpoint.post(seal.getDevEUI(),secret.getBase64PublicKey(),seal.getBase64Signature(secret.getBase64PublicKey()))
-# Utils.println(response)
-response = mockBmwEndpoint.post(seal.getDevEUI(),secret.getBase64PublicKey(),seal.getBase64Signature(secret.getBase64PublicKey()))
+response = bmwEndpoint.post(seal.getDevEUI(),secret.getBase64PublicKey(),seal.getBase64Signature(secret.getBase64PublicKey()))
+Utils.println(response)
+# response = mockBmwEndpoint.post(seal.getDevEUI(),secret.getBase64PublicKey(),seal.getBase64Signature(secret.getBase64PublicKey()))
 
 if serverEphemeralVerifier.verify(response) is True:
 
