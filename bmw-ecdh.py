@@ -93,7 +93,7 @@ class SharedSecret:
 
 
 class Verifier:
-    def __init__(self,serverStaticPublicKey='BJStOzHeObJ7KKQv5xJFr4LJjGsRN/Qhtss1eC/hwxAv4nRXrsWS+Lxq/KHvXDLSqi02kAcMHMoB0BfviJjGGTU='):
+    def __init__(self,serverStaticPublicKey='BLzEcxvsiaRBoySTXvVOLm93PjJPcwwTpCh4V1mdYUGjlBDVfxaU2lrEBcnIckojYfKAeru+xP0mH7cNP9rZoss='):
         staticLedgerKeyBuffer = base64.b64decode(serverStaticPublicKey)
         staticLedgerKeyX = int.from_bytes(staticLedgerKeyBuffer[1:33], byteorder='big')
         staticLedgerKeyY = int.from_bytes(staticLedgerKeyBuffer[33:], byteorder='big')
